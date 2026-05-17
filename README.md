@@ -55,17 +55,23 @@ If you'd rather use a system Python:
 pip install pillow
 ```
 
-### Fonts
+### Fonts (build-time only)
 
-`topo.typ` references three font families. On macOS Sequoia all three are available out of the box except JetBrains Mono.
+Typst embeds and subsets every used font into the output PDF, so **viewers don't need any of these installed** — `topo.pdf` is fully portable. You only need them on the machine that's running `typst compile`.
 
 | Family | Used for | Where to get it |
 | --- | --- | --- |
 | **Futura** | Cover title, wall names | Bundled with macOS |
 | **Iowan Old Style** | Body, wall headings | Bundled with macOS |
-| **JetBrains Mono** | Grade pills, route numbers, all caps badges, "WALL N" pills | [Download](https://www.jetbrains.com/lp/mono/) or `brew install --cask font-jetbrains-mono-nerd-font` |
+| **JetBrains Mono** | Grade pills, route numbers, all-caps badges, "WALL N" pills | [Download](https://www.jetbrains.com/lp/mono/) or `brew install --cask font-jetbrains-mono-nerd-font` |
 
-Typst will print a "unknown font family" warning at compile time if any of these are missing and fall back to a generic. The doc will still build.
+Typst will print a "unknown font family" warning at compile time if a family is missing and fall back to a generic. The doc still builds, but the styling won't match.
+
+Confirm what's embedded in a built PDF with:
+
+```sh
+pdffonts crags/paradise-alley/topo.pdf
+```
 
 ## Build
 
