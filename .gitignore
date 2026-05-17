@@ -1,0 +1,27 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+*.egg-info/
+
+# Editor / IDE
+.vscode/
+.idea/
+*.swp
+*~
+
+# Typst / build artifacts
+*.aux
+*.log
+
+# Intermediate rasters (regenerable from source PDF — see docs/extract-annotated-images.md)
+crags/*/images/annotated/
+
+# Local secrets / env
+.env
+.env.local
