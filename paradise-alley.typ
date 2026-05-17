@@ -11,37 +11,46 @@
   margin: (x: 0.6in, y: 0.55in),
 )
 
+// Body: New York (refined editorial serif)
+// Display: Futura (geometric — Sierra Club / NPS poster lineage)
+// Badges/labels: JetBrains Mono (technical, guidebook-rack feel)
+#let body-font    = ("Iowan Old Style", "Georgia")
+#let display-font = ("Futura", "Helvetica Neue")
+#let mono-font    = ("JetBrainsMono NF", "JetBrains Mono", "Menlo")
+
 #set text(
-  font: ("Helvetica Neue", "Helvetica"),
+  font: body-font,
   size: 9.5pt,
-  fill: rgb("#1a1a1a"),
+  fill: rgb("#1c1814"),
 )
 
-#set par(justify: false, leading: 0.55em)
+#set par(justify: false, leading: 0.55em, spacing: 0.55em)
+#show grid: set block(above: 0pt)
 
-// --- Color palette ---
-#let ink     = rgb("#1a1a1a")
-#let muted   = rgb("#5b5b5b")
-#let divider = rgb("#d8d4cc")
-#let cream   = rgb("#faf7f1")
-#let accent  = rgb("#c2410c")
-#let stone   = rgb("#3b3a36")
+// --- Color palette (warm earth, guidebook lineage) ---
+#let ink     = rgb("#1c1814")   // warm near-black, ink on paper
+#let muted   = rgb("#6a6359")   // warm grey
+#let divider = rgb("#d7cdba")   // tea-stained rule
+#let paper   = rgb("#f1ebde")   // warm parchment, not "AI cream"
+#let accent  = rgb("#2f4326")   // deep moss / lichen green
+#let stone   = rgb("#3a3530")   // warm graphite
+#let rust    = rgb("#8a3a1c")   // oxide red, used sparingly for warnings
 
-// Grade color coding
+// Grade pills: one tonal ramp through warm earth tones (no rainbow)
 #let grade-color(g) = {
   let s = lower(g)
   if s.starts-with("5.6") or s.starts-with("5.7") or s.starts-with("5.8") or s.starts-with("5.9") {
-    rgb("#2f7a4e")
+    rgb("#5a7148")    // sage — easy
   } else if s.starts-with("5.10") {
-    rgb("#2563b8")
+    rgb("#2f5a78")    // denim blue — moderate
   } else if s.starts-with("5.11") {
-    rgb("#b8861f")
+    rgb("#8a4a26")    // umber — hard
   } else if s.starts-with("5.12") {
-    rgb("#b8401f")
+    rgb("#6e2a1f")    // oxblood — expert
   } else if s.starts-with("5.13") {
-    rgb("#7a1f8b")
+    rgb("#3a2638")    // aubergine — elite
   } else {
-    rgb("#5b5b5b")
+    rgb("#6a6359")
   }
 }
 
@@ -50,8 +59,8 @@
 #let grade-pill(g) = box(
   fill: grade-color(g),
   inset: (x: 5pt, y: 2pt),
-  radius: 3pt,
-  text(fill: white, weight: 700, size: 8pt, g),
+  radius: 2pt,
+  text(font: mono-font, fill: white, weight: 700, size: 7.5pt, g),
 )
 
 #let route-num(n, color: ink) = box(
@@ -59,7 +68,7 @@
   fill: color,
   radius: 50%,
   inset: 0pt,
-  align(center + horizon, text(fill: white, weight: 700, size: 8.5pt, str(n))),
+  align(center + horizon, text(font: mono-font, fill: white, weight: 700, size: 8pt, str(n))),
 )
 
 #let route(num, name, grade, desc, fa) = block(
@@ -70,14 +79,14 @@
     column-gutter: 7pt,
     route-num(num),
     [
-      #text(weight: 700, size: 9.5pt, name) #h(4pt) #grade-pill(grade) \
-      #text(size: 8.8pt, desc) \
+      #text(font: display-font, weight: 600, size: 9.5pt, fill: ink, name) #h(4pt) #grade-pill(grade) \
+      #text(size: 8.8pt, fill: stone, desc) \
       #text(size: 7.5pt, fill: muted, style: "italic", fa)
     ]
   ),
 )
 
-#let project-route(num, name, fa) = block(
+#let project-route(num, name, fa, open: false) = block(
   breakable: false,
   below: 5pt,
   grid(
@@ -85,7 +94,7 @@
     column-gutter: 7pt,
     route-num(num, color: muted),
     [
-      #text(weight: 700, size: 9.5pt, name) #h(4pt) #box(fill: muted, inset: (x: 5pt, y: 2pt), radius: 3pt, text(fill: white, weight: 700, size: 8pt, "PROJECT")) \
+      #text(font: display-font, weight: 600, size: 9.5pt, fill: ink, name) #h(4pt) #box(fill: muted, inset: (x: 5pt, y: 2pt), radius: 2pt, text(font: mono-font, fill: white, weight: 700, size: 7.5pt, if open { "OPEN PROJECT" } else { "CLOSED PROJECT" })) \
       #text(size: 7.5pt, fill: muted, style: "italic", fa)
     ]
   ),
@@ -102,10 +111,10 @@
       box(
         fill: accent,
         inset: (x: 10pt, y: 6pt),
-        radius: 4pt,
-        text(fill: white, weight: 800, size: 14pt, tracking: 0.5pt, "WALL " + str(num)),
+        radius: 2pt,
+        text(font: mono-font, fill: white, weight: 700, size: 11pt, tracking: 1pt, "WALL " + str(num)),
       ),
-      text(weight: 700, size: 18pt, fill: stone, name),
+      text(font: display-font, weight: 500, size: 22pt, fill: stone, name),
     )
     #if subtitle != none [
       #v(2pt)
@@ -117,10 +126,11 @@
 )
 
 #let section-label(s) = text(
-  size: 8pt,
+  font: mono-font,
+  size: 7.5pt,
   weight: 700,
   fill: accent,
-  tracking: 1.5pt,
+  tracking: 1pt,
   upper(s),
 )
 
@@ -141,24 +151,24 @@
 
 #page(
   margin: 0pt,
-  background: rect(fill: cream, width: 100%, height: 100%),
+  background: rect(fill: paper, width: 100%, height: 100%),
 )[
-  #v(1.2in)
+  #v(0.9in)
   #align(center)[
-    #text(size: 9pt, fill: accent, weight: 700, tracking: 4pt, "SQUAMISH · BRITISH COLUMBIA")
-    #v(0.4in)
-    #text(size: 64pt, weight: 900, fill: stone, tracking: -1pt, "Paradise")
-    #v(-30pt)
-    #text(size: 64pt, weight: 900, fill: accent, tracking: -1pt, style: "italic", "Alley")
-    #v(0.2in)
-    #block(width: 4in, stroke: (top: 1pt + ink, bottom: 1pt + ink), inset: (y: 10pt))[
-      #text(size: 11pt, fill: stone, tracking: 2pt, "A SPORT CLIMBING TOPO")
+    #text(font: mono-font, size: 8pt, fill: accent, weight: 700, tracking: 3pt, "SQUAMISH · BRITISH COLUMBIA")
+    #v(0.3in)
+    #text(font: display-font, size: 64pt, weight: 500, fill: stone, tracking: -2pt, "Paradise")
+    #v(-22pt)
+    #text(font: display-font, size: 64pt, weight: 700, fill: accent, tracking: 2pt, upper("Alley"))
+    #v(0.15in)
+    #block(width: 4in, stroke: (top: 0.7pt + ink, bottom: 0.7pt + ink), inset: (y: 8pt))[
+      #text(font: mono-font, size: 9pt, fill: stone, tracking: 2pt, "A SPORT CLIMBING TOPO")
     ]
-    #v(0.4in)
+    #v(0.25in)
     #text(size: 11pt, fill: muted, style: "italic", "46 routes · 8–20 m · Bolted sport climbing on granite")
   ]
 
-  #v(0.3in)
+  #v(0.25in)
   #align(center)[
     #box(width: 5.5in)[
       #grid(
@@ -194,7 +204,11 @@
   ]
 
   #place(bottom + center, dy: -0.5in)[
-    #text(size: 8pt, fill: muted, tracking: 1.5pt, upper("Compiled by Alex Ryan Tucker"))
+    #align(center)[
+      #text(font: mono-font, size: 7.5pt, fill: muted, tracking: 1.5pt, upper("Compiled by Alex Ryan Tucker")) \
+      #v(2pt)
+      #text(font: mono-font, size: 6pt, fill: muted, tracking: 1pt, upper("Reformatted by Zaymon Antonio"))
+    ]
   ]
 ]
 
@@ -202,11 +216,23 @@
 // APPROACH & OVERVIEW
 // =====================================================
 
-#wall-header(0, "Approach & Overview", subtitle: "Getting there, what to expect, and other-user etiquette.")
+#block(
+  below: 8pt,
+  above: 0pt,
+  [
+    #text(font: display-font, weight: 500, size: 26pt, fill: stone, "Approach & Overview")
+    #v(2pt)
+    #text(size: 9pt, fill: muted, style: "italic", "Getting there, what to expect, and other-user etiquette.")
+    #v(4pt)
+    #line(length: 100%, stroke: 0.5pt + divider)
+  ],
+)
 
 #grid(
   columns: (1.4fr, 1fr),
   column-gutter: 16pt,
+  row-gutter: 12pt,
+  // ---- Row 1: Parking ↔ Crag overview ----
   [
     #section-label("Parking")
     #v(2pt)
@@ -214,11 +240,13 @@
 
     #v(4pt)
     #block(
-      fill: rgb("#fff4ec"),
-      stroke: (left: 2pt + accent),
+      fill: paper,
+      stroke: (left: 2pt + rust),
       inset: 8pt,
-      radius: 2pt,
+      radius: 0pt,
     )[
+      #text(font: mono-font, size: 7.5pt, weight: 700, fill: rust, tracking: 1pt, "CAUTION") \
+      #v(2pt)
       *Do not turn directly into it across the highway* — an accident could result in the parking being shut down. Instead, drive up to the salt sheds just north of Chek, turn around there, and drive back south. It comes up quick — slow down early.
     ]
 
@@ -228,25 +256,30 @@
     #v(4pt)
     #link("https://osm.org/go/WJR9myVox--?m=")[
       #box(
-        fill: cream,
+        fill: paper,
         stroke: 0.5pt + accent,
         inset: (x: 8pt, y: 5pt),
         radius: 3pt,
       )[
-        #text(size: 9pt, weight: 700, fill: accent, "→ Pin for parking ")
-        #text(size: 8pt, fill: muted, "(osm.org)")
+        #text(font: mono-font, size: 8.5pt, weight: 700, fill: accent, tracking: 0.5pt, "→ PIN FOR PARKING")
       ]
     ]
-
-    #v(8pt)
+  ],
+  align(center)[
+    #image("paradise-alley-images/overview.jpg", height: 2.6in)
+    #v(2pt)
+    #text(size: 7.5pt, fill: muted, style: "italic", "Crag overview — wall numbers")
+  ],
+  // ---- Row 2: Approach ↔ Aerial approach ----
+  [
     #section-label("Approach (1.3 km · 80 m elevation)")
     #v(2pt)
     Head past the yellow gate and follow the logging road with powerlines along it. After 10–15 minutes you will see another logging road heading uphill to the left, across a small ditch — the powerline splits off this way. Follow it to the crag. *20 minutes.*
   ],
-  [
+  align(center)[
     #image("paradise-alley-images/img-000.jpg", width: 100%)
-    #v(4pt)
-    #align(center, text(size: 8pt, fill: muted, style: "italic", "Aerial view — orange line shows the approach from the highway pullout."))
+    #v(2pt)
+    #text(size: 7.5pt, fill: muted, style: "italic", "Aerial view — orange line shows the approach.")
   ],
 )
 
@@ -257,24 +290,12 @@
 #v(4pt)
 
 #grid(
-  columns: (1.5fr, 1fr),
-  column-gutter: 16pt,
-  [
-    #grid(
-      columns: (1fr, 1fr),
-      column-gutter: 14pt,
-      row-gutter: 8pt,
-      [*Loose rock.* Like all new areas, loose rock is a hazard and some climbs may be a little dusty.],
-      [*Shared trails.* The area is used by other recreationalists including trials bikers, hunters, and hikers — please be respectful of them.],
-      [*Ticks.* Like Cat Lake and Area 44, ticks are common — especially in the spring.],
-      [*Top-rope access.* Easiest for Wall 5. Scramble up the loose gully on the right or walk around the left. Use trees to access the edge safely.],
-    )
-  ],
-  align(center)[
-    #image("paradise-alley-images/img-001.jpg", height: 2.4in)
-    #v(2pt)
-    #text(size: 7.5pt, fill: muted, style: "italic", "Crag overview — wall numbers")
-  ],
+  columns: (1fr, 1fr, 1fr, 1fr),
+  column-gutter: 14pt,
+  [*Loose rock.* Like all new areas, loose rock is a hazard and some climbs may be a little dusty.],
+  [*Shared trails.* The area is used by other recreationalists including trials bikers, hunters, and hikers — please be respectful of them.],
+  [*Ticks.* Like Cat Lake and Area 44, ticks are common — especially in the spring.],
+  [*Top-rope access.* Easiest for Wall 5. Scramble up the loose gully on the right or walk around the left. Use trees to access the edge safely.],
 )
 
 #pagebreak()
@@ -299,7 +320,7 @@
       "Thin face climbing up the slab.",
       "Liam Church, 2024")
 
-    #project-route(3, "Open Project", "Prep: Liam Church")
+    #project-route(3, "Open Project", "Prep: Liam Church", open: true)
 
     #route(4, "Señor Leñador", "5.12a",
       "Short and punchy. Climb the aesthetic corner and attempt to decipher its bouldery crux.",
@@ -543,7 +564,7 @@
       "Surprisingly easier than its neighbour to the left.",
       "Rick Willison, 2023")
 
-    #project-route(40, "Open Project", "Prep Rick Willison")
+    #project-route(40, "Open Project", "Prep Rick Willison", open: true)
 
     #route(41, "Molly's Crab Trap", "5.12d",
       "Steep and hard to read, but pretty nice once you work it out.",
