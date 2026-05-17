@@ -36,22 +36,56 @@
 #let stone   = rgb("#3a3530")   // warm graphite
 #let rust    = rgb("#8a3a1c")   // oxide red, used sparingly for warnings
 
-// Grade pills: one tonal ramp through warm earth tones (no rainbow)
-#let grade-color(g) = {
-  let s = lower(g)
-  if s.starts-with("5.6") or s.starts-with("5.7") or s.starts-with("5.8") or s.starts-with("5.9") {
-    rgb("#5a7148")    // sage — easy
-  } else if s.starts-with("5.10") {
-    rgb("#2f5a78")    // denim blue — moderate
-  } else if s.starts-with("5.11") {
-    rgb("#8a4a26")    // umber — hard
-  } else if s.starts-with("5.12") {
-    rgb("#6e2a1f")    // oxblood — expert
-  } else if s.starts-with("5.13") {
-    rgb("#3a2638")    // aubergine — elite
-  } else {
-    rgb("#6a6359")
+// Grade pills: per-letter coloring along a teal → indigo gradient.
+// Each grade maps to a position 0-19 (5.6=0 … 5.13d=19), with anchor colors
+// at every "a" step and linear interpolation between.
+
+#let grade-position(g) = {
+  let s = lower(g).replace(" ", "")
+  if s.starts-with("5.6") { 1 }
+  else if s.starts-with("5.7") { 2 }
+  else if s.starts-with("5.8") { 3 }
+  else if s.starts-with("5.9") { 4 }
+  else {
+    let base = if s.starts-with("5.10") { 5 }
+      else if s.starts-with("5.11") { 9 }
+      else if s.starts-with("5.12") { 13 }
+      else if s.starts-with("5.13") { 17 }
+      else { 0 }
+    let letter-offset = if s.ends-with("a") or not (s.ends-with("b") or s.ends-with("c") or s.ends-with("d")) { 0 }
+      else if s.ends-with("b") { 1 }
+      else if s.ends-with("c") { 2 }
+      else { 3 }
+    base + letter-offset
   }
+}
+
+#let grade-stops = (
+  (0,  rgb("#9ad8b6")),  // light teal — 5.6 anchor (lightest)
+  (5,  rgb("#3e9270")),  // jade — 5.10a
+  (9,  rgb("#4f93d3")),  // sky blue — 5.11a
+  (13, rgb("#9985d4")),  // lavender — 5.12a
+  (17, rgb("#3d3582")),  // deep indigo — 5.13a
+)
+
+#let grade-color(g) = {
+  // Range pill ("5.6–5.9"): use mid-range
+  let s = lower(g)
+  if s.contains("–") or s.contains("-") and s.starts-with("5.") {
+    return rgb("#4ca783")
+  }
+  let pos = grade-position(g)
+  if pos <= grade-stops.at(0).at(0) { return grade-stops.at(0).at(1) }
+  if pos >= grade-stops.last().at(0) { return grade-stops.last().at(1) }
+  // find segment
+  let i = 0
+  while i < grade-stops.len() - 1 and pos >= grade-stops.at(i + 1).at(0) {
+    i = i + 1
+  }
+  let (p1, c1) = grade-stops.at(i)
+  let (p2, c2) = grade-stops.at(i + 1)
+  let t = (pos - p1) / (p2 - p1)
+  color.mix((c1, (1.0 - t) * 100%), (c2, t * 100%), space: oklch)
 }
 
 // --- Components ---
@@ -183,21 +217,27 @@
 
   #v(0.5in)
   #align(center)[
-    #box(width: 5.5in)[
+    #box(width: 6.5in)[
       #align(left)[
         #section-label("Grade Distribution")
         #v(2pt)
         #line(length: 100%, stroke: 0.5pt + divider)
-        #v(6pt)
+        #v(8pt)
+        #let counts = (
+          ("5.6",  1), ("5.7",  1), ("5.8",  4), ("5.9",  3),
+          ("5.10a", 2), ("5.10d", 2),
+          ("5.11a", 2), ("5.11b", 3), ("5.11c", 6),
+          ("5.12a", 5), ("5.12b", 4), ("5.12c", 4), ("5.12d", 1),
+          ("5.13a", 1),
+        )
         #grid(
-          columns: (1fr, 1fr, 1fr, 1fr, 1fr),
-          column-gutter: 8pt,
-          align: center,
-          [#grade-pill("5.6–5.9") \ #text(size: 8pt, fill: muted, "Beginner")],
-          [#grade-pill("5.10") \ #text(size: 8pt, fill: muted, "Moderate")],
-          [#grade-pill("5.11") \ #text(size: 8pt, fill: muted, "Hard")],
-          [#grade-pill("5.12") \ #text(size: 8pt, fill: muted, "Expert")],
-          [#grade-pill("5.13") \ #text(size: 8pt, fill: muted, "Elite")],
+          columns: counts.len() * (1fr,),
+          column-gutter: 4pt,
+          align: center + bottom,
+          ..counts.map(((g, n)) => [
+            #grade-pill(g) \
+            #text(font: mono-font, size: 7.5pt, fill: stone, weight: 600, str(n))
+          ])
         )
       ]
     ]
