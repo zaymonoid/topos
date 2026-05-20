@@ -94,6 +94,7 @@
   fill: grade-color(g),
   inset: (x: 5pt, y: 2pt),
   radius: 2pt,
+  baseline: 1.5pt,
   text(font: mono-font, fill: white, weight: 700, size: 7.5pt, g),
 )
 
@@ -105,24 +106,28 @@
   align(center + horizon, text(font: mono-font, fill: white, weight: 700, size: 8pt, str(n))),
 )
 
-#let route(num, name, grade, desc, fa) = block(
+#let route(num, name, grade, desc, fa, bolts: none) = block(
   breakable: false,
-  below: 5pt,
+  below: 9pt,
   grid(
     columns: (18pt, 1fr),
     column-gutter: 7pt,
     route-num(num),
-    [
-      #text(font: display-font, weight: 600, size: 9.5pt, fill: ink, name) #h(4pt) #grade-pill(grade) \
+    pad(top: 1pt)[
+      #text(font: display-font, weight: 600, size: 9.5pt, fill: ink, name) #h(4pt) #grade-pill(grade)
+      #v(-3pt)
       #text(size: 8.8pt, fill: stone, desc) \
-      #text(size: 7.5pt, fill: muted, style: "italic", fa)
+      #text(size: 7.5pt, fill: muted, style: "italic", {
+        if bolts != none [#str(bolts) bolts #sym.bullet ]
+        fa
+      })
     ]
   ),
 )
 
 #let project-route(num, name, fa, open: false) = block(
   breakable: false,
-  below: 5pt,
+  below: 9pt,
   grid(
     columns: (18pt, 1fr),
     column-gutter: 7pt,
@@ -194,12 +199,8 @@
     #text(font: display-font, size: 64pt, weight: 500, fill: stone, tracking: -2pt, "Paradise")
     #v(-22pt)
     #text(font: display-font, size: 64pt, weight: 700, fill: accent, tracking: 2pt, upper("Alley"))
-    #v(0.15in)
-    #block(width: 4in, stroke: (top: 0.7pt + ink, bottom: 0.7pt + ink), inset: (y: 8pt))[
-      #text(font: mono-font, size: 9pt, fill: stone, tracking: 2pt, "A SPORT CLIMBING TOPO")
-    ]
     #v(0.25in)
-    #text(size: 11pt, fill: muted, style: "italic", "46 routes · 8–20 m · Bolted sport climbing on granite")
+    #text(size: 11pt, fill: muted, style: "italic", "46 routes · 8–24 m · Bolted sport climbing on granite")
   ]
 
   #v(0.25in)
@@ -209,7 +210,7 @@
         columns: (1fr, 1fr, 1fr),
         column-gutter: 12pt,
         stat-block("Total Routes", "46 sport routes"),
-        stat-block("Route Length", "8 – 20 m"),
+        stat-block("Route Length", "8 – 24 m"),
         stat-block("Approach", "1.3 km · 80 m gain · 20 min"),
       )
     ]
@@ -224,10 +225,10 @@
         #line(length: 100%, stroke: 0.5pt + divider)
         #v(14pt)
         #let counts = (
-          ("5.6",  1), ("5.7",  1), ("5.8",  4), ("5.9",  3),
-          ("5.10a", 2), ("5.10d", 2),
+          ("5.6",  1), ("5.7",  2), ("5.8",  4), ("5.9",  4),
+          ("5.10a", 2), ("5.10c", 1), ("5.10d", 2),
           ("5.11a", 2), ("5.11b", 3), ("5.11c", 6),
-          ("5.12a", 5), ("5.12b", 4), ("5.12c", 4), ("5.12d", 1),
+          ("5.12a", 5), ("5.12b", 4), ("5.12c", 4), ("5.12d", 2),
           ("5.13a", 1),
         )
         #let max-count = 6
@@ -264,9 +265,29 @@
 
   #place(bottom + center, dy: -0.5in)[
     #align(center)[
-      #text(font: mono-font, size: 7.5pt, fill: muted, tracking: 1.5pt, upper("Compiled by Alex Ryan Tucker")) \
-      #v(2pt)
-      #text(font: mono-font, size: 6pt, fill: muted, tracking: 1pt, upper("Reformatted by Zaymon Antonio"))
+      #block(width: 6in)[
+        #line(length: 100%, stroke: 0.5pt + divider)
+        #v(12pt)
+        #text(font: mono-font, size: 7pt, fill: accent, weight: 700, tracking: 2pt, "BUILT WITH SUPPORT FROM THE SEA-TO-SKY BOLT FUND")
+        #v(10pt)
+        #image("../../assets/SeaToSkyBoltFund_Sticker.pdf", width: 4.5in)
+        #v(10pt)
+        #text(size: 8.5pt, fill: stone, style: "italic", "A large share of the bolts at Paradise Alley came from the fund. Please support future development.")
+        #v(8pt)
+        #link("https://seatoskyclimbing.ca")[
+          #box(
+            fill: accent,
+            inset: (x: 10pt, y: 6pt),
+            radius: 3pt,
+          )[
+            #text(font: mono-font, size: 8.5pt, weight: 700, fill: white, tracking: 1pt, "→ DONATE TO THE BOLT FUND")
+          ]
+        ]
+        #v(14pt)
+        #line(length: 100%, stroke: 0.5pt + divider)
+        #v(10pt)
+      ]
+      #text(font: mono-font, size: 7.5pt, fill: muted, tracking: 1.5pt, upper("Compiled by Alex Ryan Tucker"))
     ]
   ]
 ]
@@ -342,7 +363,7 @@
   ],
 )
 
-#v(10pt)
+#v(1fr)
 #section-label("Other Information")
 #v(4pt)
 #line(length: 100%, stroke: 0.5pt + divider)
@@ -487,7 +508,7 @@
 
 #wall-header(5, "Spoonerisms", subtitle: "The crag's centerpiece — fourteen routes from beginner jugs to hard 5.11.")
 
-#align(center, image("images/walls/wall5.jpg", height: 3.6in))
+#align(center, image("images/walls/wall5.jpg", height: 3.0in))
 
 #v(8pt)
 
@@ -495,9 +516,13 @@
   columns: (1fr, 1fr),
   column-gutter: 18pt,
   [
-    #project-route(16, "Bodhi Boy", "Art Bass")
+    #route(16, "Bodhi Boy", "5.7",
+      "Plenty of jugs on one of the easiest routes in the area.",
+      "Ryan MacDonald, 2025")
 
-    #project-route(17, "In progress — closed!", "Art Bass")
+    #route(17, "Nighthawcracy", "5.9",
+      "Work up the face, easy climbing at the top.",
+      "Art Bass")
 
     #route(18, "No Country for Bold Men", "5.10a",
       "Work up the face on small holds and thin seams to reach the easier top half.",
@@ -583,7 +608,9 @@
       "Rick Willison, 2023")
   ],
   [
-    #project-route(34, "Project", "Rick Willison")
+    #route(34, "Downstairs Paradise", "5.12d",
+      "Link Downstairs Mixup into the top of Birds of Paradise.",
+      "Rick Willison, 2025")
 
     #route(35, "Birds of Paradise", "5.13a",
       "Thin, delicate climbing on small holds to a big move from the slot and an easier finish. Very good.",
@@ -640,13 +667,56 @@
 
     #route(44, "Bitin' List", "5.12b",
       "A hard crux down low above the little roof, and a crimpy one to pass the bulge up high.",
-      "Alex Ryan Tucker")
+      "Alex Ryan Tucker, 2025")
 
     #project-route(45, "In development", "Alex Ryan Tucker")
 
-    #project-route(46, "In development", "Alex Ryan Tucker")
+    #route(46, "Hot Salad", "5.10c",
+      "A weird start up the gully leads to a lovely face climb and the best view at the crag.",
+      "Alex Ryan Tucker, 2026")
   ],
 )
+
+#v(10pt)
+
+#block(
+  fill: rgb("#1d3a5f"),
+  inset: 12pt,
+  radius: 4pt,
+  width: 100%,
+)[
+  #text(font: body-font, fill: white, size: 9pt)[
+    *Hilltop Grouse* is named for the many grouse we encountered and heard while developing the crag. In spring, you will often hear the hooting of sooty grouse, which sounds like someone blowing across the opening of a large jug. This is the male's mating call.
+  ]
+]
+
+#pagebreak()
+
+// =====================================================
+// ACKNOWLEDGEMENTS
+// =====================================================
+
+#block(
+  below: 8pt,
+  above: 0pt,
+  [
+    #text(font: display-font, weight: 700, size: 32pt, fill: stone, tracking: 1pt, upper("Acknowledgements"))
+    #v(4pt)
+    #line(length: 100%, stroke: 0.5pt + divider)
+  ],
+)
+
+#v(6pt)
+
+First, a massive thank you to the friends who supported with scrubbing, belaying, and maintaining the stoke. Seeing them enjoying the early routes while they were still covered in dirt and the crag a mess reassured us that we weren't wasting your time and that the wall isn't a total pile of choss.
+
+#v(4pt)
+
+We are also very grateful to everyone who supports the Sea-to-Sky Bolt Fund, and to Peter Winter who administered the fund while we were working on the crag. We self-funded some routes, but a large share of bolts came from the fund. Without it, developing this many routes would have been impossible — particularly on a student budget. We hope that the wide range of grades means that supporters of all ages and abilities can enjoy this new zone. Please support the fund by donating at the QR code below or clicking the #link("https://seatoskyclimbing.ca")[donate button at this link.]
+
+#v(12pt)
+
+#align(center, image("../../assets/SeaToSkyBoltFund_Sticker.pdf", width: 5in))
 
 #v(0.4in)
 
@@ -654,4 +724,6 @@
   #line(length: 3in, stroke: 0.5pt + divider)
   #v(8pt)
   #text(size: 8pt, fill: muted, tracking: 2pt, upper("End of guide · climb safe · pack it out"))
+  #v(10pt)
+  #text(font: mono-font, size: 6.5pt, fill: muted, tracking: 1pt, "Reformatted by @zaymonoid")
 ]
